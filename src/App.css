@@ -11,3 +11,12 @@ input[type='search']::placeholder {
     height: 100px;
     border-radius: 50%;
 }
+.avatar-lg{
+    width: 170px;
+    height: 170px;
+}
+
+.spinner-sm{
+    width: 150px;
+    height: 150px;
+}

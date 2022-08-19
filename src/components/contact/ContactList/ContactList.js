@@ -1,7 +1,35 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
-import noAvatar from '../../../assets/images/no-avatar.jpg';
+import ContactService from './../../../services/ContactService';
+import Spinner from './../../Spinner/Spinner';
 function ContactList() {
+    const [state, setState] = useState({
+        loading: false,
+        contacts: [],
+        errorMessage: ''
+    });
+
+    useEffect(function () {
+        try {
+            setState({ ...state, loading: true });
+            async function fetchContact() {
+                let contactRes = await ContactService.getContacts();
+                setState({
+                    ...state,
+                    contacts: contactRes.data,
+                    loading: false
+                })
+            }
+            fetchContact();
+        } catch (error) {
+            setState({
+                ...state,
+                errorMessage: error.message,
+                loading: false
+            })
+        }
+    }, []);
+    const { loading, contacts, errorMessage } = state;
     return (
         <React.Fragment>
             <section className="create-contact my-2">
@@ -22,156 +50,55 @@ function ContactList() {
             </section>
             <section className="contact-list">
                 <div className="container">
-                    <div className="row">
-                        <div className="col-6 mb-4">
-                            <div className="card ">
-                                <div className="card-body">
-                                    <div className="row align-items-center">
-                                        <div className="col-3">
-                                            <img className="avatar-sm" src={noAvatar} alt="" />
-                                        </div>
-                                        <div className="col-8">
-                                            <ul class="list-group">
-                                                <li class="list-group-item">
-                                                    Name: <span className="fw-bold">Khoa Nguyễn</span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    Mobile: <span className="fw-bold">0935.216.417</span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    Email: <span className="fw-bold">khoa.nguyen@codegym.vn</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div className="col-1">
-                                            <div className="d-flex flex-column align-items-center">
-                                                <Link to={"/contact/view"} className="btn btn-sm btn-warning mb-2">
-                                                    <i className="fa fa-eye"></i>
-                                                </Link>
-                                                <Link to={"/contact/edit"} className="btn btn-sm btn-primary mb-2">
-                                                    <i className="fa fa-edit"></i>
-                                                </Link>
-                                                <button className="btn btn-sm btn-danger">
-                                                    <i className="fa fa-trash"></i>
-                                                </button>
+                    {
+                        loading ? <Spinner /> : (
+                            <div className="row">
+                                {
+                                    contacts.map((contact) =>
+                                    (<div className="col-6 mb-4" key={contact.id}>
+                                        <div className="card ">
+                                            <div className="card-body">
+                                                <div className="row align-items-center">
+                                                    <div className="col-3">
+                                                        <img className="avatar-sm" src={contact.photoUrl} alt="" />
+                                                    </div>
+                                                    <div className="col-8">
+                                                        <ul class="list-group">
+                                                            <li class="list-group-item">
+                                                                Name: <span className="fw-bold">{contact.name}</span>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                Mobile: <span className="fw-bold">{contact.mobile}</span>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                Email: <span className="fw-bold">{contact.email}</span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div className="col-1">
+                                                        <div className="d-flex flex-column align-items-center">
+                                                            <Link to={`/contact/view/${contact.id}`} className="btn btn-sm btn-warning mb-2">
+                                                                <i className="fa fa-eye"></i>
+                                                            </Link>
+                                                            <Link to={"/contact/edit"} className="btn btn-sm btn-primary mb-2">
+                                                                <i className="fa fa-edit"></i>
+                                                            </Link>
+                                                            <button className="btn btn-sm btn-danger">
+                                                                <i className="fa fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    )
+                                    )
+                                }
                             </div>
-                        </div>
-                        <div className="col-6 mb-4">
-                            <div className="card ">
-                                <div className="card-body">
-                                    <div className="row align-items-center">
-                                        <div className="col-3">
-                                            <img className="avatar-sm" src={noAvatar} alt="" />
-                                        </div>
-                                        <div className="col-8">
-                                            <ul class="list-group">
-                                                <li class="list-group-item">
-                                                    Name: <span className="fw-bold">Khoa Nguyễn</span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    Mobile: <span className="fw-bold">0935.216.417</span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    Email: <span className="fw-bold">khoa.nguyen@codegym.vn</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div className="col-1">
-                                            <div className="d-flex flex-column align-items-center">
-                                                <Link to={"/contact/view"} className="btn btn-sm btn-warning mb-2">
-                                                    <i className="fa fa-eye"></i>
-                                                </Link>
-                                                <Link to={"/contact/edit"} className="btn btn-sm btn-primary mb-2">
-                                                    <i className="fa fa-edit"></i>
-                                                </Link>
-                                                <button className="btn btn-sm btn-danger">
-                                                    <i className="fa fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-6 mb-4">
-                            <div className="card ">
-                                <div className="card-body">
-                                    <div className="row align-items-center">
-                                        <div className="col-3">
-                                            <img className="avatar-sm" src={noAvatar} alt="" />
-                                        </div>
-                                        <div className="col-8">
-                                            <ul class="list-group">
-                                                <li class="list-group-item">
-                                                    Name: <span className="fw-bold">Khoa Nguyễn</span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    Mobile: <span className="fw-bold">0935.216.417</span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    Email: <span className="fw-bold">khoa.nguyen@codegym.vn</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div className="col-1">
-                                            <div className="d-flex flex-column align-items-center">
-                                                <Link to={"/contact/view"} className="btn btn-sm btn-warning mb-2">
-                                                    <i className="fa fa-eye"></i>
-                                                </Link>
-                                                <Link to={"/contact/edit"} className="btn btn-sm btn-primary mb-2">
-                                                    <i className="fa fa-edit"></i>
-                                                </Link>
-                                                <button className="btn btn-sm btn-danger">
-                                                    <i className="fa fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-6 mb-4">
-                            <div className="card ">
-                                <div className="card-body">
-                                    <div className="row align-items-center">
-                                        <div className="col-3">
-                                            <img className="avatar-sm" src={noAvatar} alt="" />
-                                        </div>
-                                        <div className="col-8">
-                                            <ul class="list-group">
-                                                <li class="list-group-item">
-                                                    Name: <span className="fw-bold">Khoa Nguyễn</span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    Mobile: <span className="fw-bold">0935.216.417</span>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    Email: <span className="fw-bold">khoa.nguyen@codegym.vn</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div className="col-1">
-                                            <div className="d-flex flex-column align-items-center">
-                                                <Link to={"/contact/view"} className="btn btn-sm btn-warning mb-2">
-                                                    <i className="fa fa-eye"></i>
-                                                </Link>
-                                                <Link to={"/contact/edit"} className="btn btn-sm btn-primary mb-2">
-                                                    <i className="fa fa-edit"></i>
-                                                </Link>
-                                                <button className="btn btn-sm btn-danger">
-                                                    <i className="fa fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        )
+                    }
+
                 </div>
             </section>
         </React.Fragment>

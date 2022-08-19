@@ -16,7 +16,7 @@ function App() {
             <Route path="/contact/list" element={<ContactList/>} />
             <Route path="/contact/add" element={<AddContact/>} />
             <Route path="/contact/edit" element={<EditContact/>} />
-            <Route path="/contact/view" element={<ViewContact/>} />
+            <Route path="/contact/view/:contactId" element={<ViewContact/>} />
         </Routes>
     </React.Fragment>
   );
